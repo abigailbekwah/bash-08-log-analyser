@@ -1,0 +1,70 @@
+# bash-08-log-analyser
+
+Bash-08-log-analyser is a modular script built to turn thousands of raw server log entries into a clean, comprehensive traffic report in seconds.
+
+## Problem_Statement​
+
+The Rebase website was slow yesterday, and some students say the application page "disappeared". Nobody knows what happened. The answer is in the server log. Build loganalyse.sh to turn thousands of raw lines into a report a manager can read in one minute.
+
+## 📌 Project Goals​
+
+- Compute overall structural parameters quickly from any size dataset.
+- Isolate targets specifically within precise log record positions without relying on loose approximations.
+- Ensure absolute script stability when parsing missing, empty, or unreadable target inputs.
+- Track and expose structural vulnerabilities like frequent application layer response errors.
+- Construct discrete operational logic segments encapsulated completely inside independent script routines.
+
+## Tech stack
+
+
+- Bash (Linux Command Line)
+- ShellCheck (Static Analysis)
+- Git & GitHub
+
+## screenshot
+
+![bash script] ![alt text](<asset/images/Screenshot From 2026-11-02 17-38-04.png>)
+
+## Features
+
+- Instantly verifies argument presence and readable tracking parameters.
+- Safely detects zero-byte empty logs and outputs a user-friendly notice instead of crashing.
+- Employs precise regular expressions and conditional logic to categorize response groups (2xx, 3xx, 4xx, 5xx) strictly from log columns.
+- Isolates top volume resource consumer pathways and client request patterns.
+- Aggregates and surfaces the top 5 most frequent 404 page failure endpoints.
+- Accumulates payload sizes and prints total outbound network volume in Megabytes (MB) formatted to one decimal place.
+
+## installation and setup
+
+clone the repository
+
+```bash
+git clone https://github.com/abigailbekwah/bash-08-log-analyser.git
+- chmod +x loganalyse.sh
+- ./loganalyse.sh
+```
+
+## Challenges Faced
+
+- Debugging parsing loops to clear dynamic keyword errors (like ShellCheck SC1089 code syntax issues).
+- Setting up clean variables at execution to resolve empty parameter path warnings (`file '' is missing`).
+- Combining command pipelines safely with utilities like `awk`, `sort`, `uniq`, and `wc` to structure analytical data streams correctly.
+- Converting raw log column byte strings into structured floating-point Megabyte numbers directly within the terminal shell environment.
+
+## 📚 What I Learnt
+
+- How to structure clean input validations to protect text processing scripts from unpredictable runtime failures.
+- Designing modular, scalable shell scripts by breaking up code logic into isolated, reusable execution functions.
+- Utilizing advanced `awk` properties to selectively pull string indices, extract custom fields, and apply strict column pattern matching.
+- Managing code tracking repositories directly from the local system terminal to streamline branch pipelines.
+
+## Author​
+
+Bekwah Abigail Becky
+
+Junior bash developer
+
+👨🏽‍💻 Email: <abigailbekwah@gmail.com>​
+
+🌍 Based in Cameroon | Open to remote opportunities
+Was able to understand the question at a point

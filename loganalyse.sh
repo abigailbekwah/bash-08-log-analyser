@@ -6,10 +6,19 @@ if [ -z "$1" ]; then
 fi 
 # check if the log file was provided and if it exist or  it's readable
 if [ ! -f "$LOGFILE" ] || [ ! -r "$LOGFILE" ]; then
-    echo "Error: file '$LOGFILE' is missing or unreadable" >&2
+    echo "Error: file "$LOGFILE" is missing or unreadable" >&2
     exit 1
 fi 
     LOGFILE="$1"
+
+if [ ! -s "$LOGFILE" ]; then
+    echo "========================================"
+    echo "         LOG ANALYSIS REPORT            "
+    echo "========================================"
+    echo "No data available in log file: '$LOGFILE'"
+    echo "========================================"
+    exit 0  
+fi
 
 print_header() {
     echo "========================================"
@@ -36,26 +45,14 @@ calculate_traffic_summary() {
     echo "Unique IP Addresses: $unique_ips"
 }
 
-# Count status codes efficiently using awk matching
+calculate_status_counts() {
+    local status_2xx status_3xx status_4xx status_5xx
     status_2xx=$(awk '$9 ~ /^2/ {print $9}' "$LOGFILE" | wc -l)
     status_3xx=$(awk '$9 ~ /^3/ {print $9}' "$LOGFILE" | wc -l)
     status_4xx=$(awk '$9 ~ /^4/ {print $9}' "$LOGFILE" | wc -l)
     status_5xx=$(awk '$9 ~ /^5/ {print $9}' "$LOGFILE" | wc -l)
-eval $(awk '{
-    class = substr($9, 1, 1)
-    if (class ~ /[2345]/) count[class]++
-}
-END {
-    printf("status_2xx=%d\nstatus_3xx=%d\nstatus_4xx=%d\nstatus_5xx=%d\n", 
-        count["2"], count["3"], count["4"], count["5"])
-}' "$LOGFILE")
 
-# Output formatting
-echo "========================================"
-echo "         LOG ANALYSIS REPORT            "
-echo "========================================"
-echo "Total Requests:      $total_requests"
-echo "Unique IP Addresses: $unique_ips"
+}
 echo "----------------------------------------"
 echo "HTTP Status Responses:"
 echo "  2xx (Success):     $status_2xx"
@@ -64,17 +61,36 @@ echo "  4xx (Client Error):$status_4xx"
 echo "  5xx (Server Error):$status_5xx"
 echo "========================================"
 
-5 top pages
-    awk '{print $7}' "$LOGFILE" | sort | uniq -c | sort -nr | head -n 5
-    echo "5 top pages"
-while read -r count page; do
-    printf "  %5d  %s\n" "$count" "$page"
-done <<< "$top_pages"
-5 top ip address
-    awk '{print $1}' "$LOGFILE" | sort | uniq -c | sort -rn | head -n 5
-while read -r count ip; do
-    printf "  %5d  %s\n" "$count" "$ip"
-done <<< "$top_ips"
-Top 5 Most Frequent 404 Pages:"
+print_top_pages() {
+    echo "----------------------------------------"
+    echo "Top 5 Most Requested Pages:"
     echo "Count | Page URL"
-    awk '$9 == 404 {print $7}' "$LOGFILE" | sort | uniq -c | sort -rn | head
+    awk '{print $7}' "$LOGFILE" | sort | uniq -c | sort -rn | head -n 5
+}
+
+print_top_(){
+echo "----------------------------------------"
+    echo "Top 5 Most Frequent IP Addresses:"
+    echo "Count | IP Address"
+    awk '{print $1}' "$LOGFILE" | sort | uniq -c | sort -rn | head -n 5
+}
+
+print_top_broken_links() {
+    echo "----------------------------------------"
+    echo "Top 5 Most Frequent 404 Pages:"
+    echo "Count | Page URL"
+    awk '$9 == 404 {print $7}' "$LOGFILE" | sort | uniq -c | sort -rn | head -n 5
+}
+
+print_footer() {
+    echo "========================================"
+}
+
+print_header
+calculate_traffic_summary
+calculate_bandwidth
+calculate_status_counts
+print_top_ips
+print_top_pages
+print_top_broken_links
+print_footer 
