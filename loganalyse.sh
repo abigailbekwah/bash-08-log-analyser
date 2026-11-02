@@ -11,9 +11,30 @@ if [ ! -f "$LOGFILE" ] || [ ! -r "$LOGFILE" ]; then
 fi 
     LOGFILE="$1"
 
-# Calculations
+print_header() {
+    echo "========================================"
+    echo "         LOG ANALYSIS REPORT            "
+    echo "========================================"
+}
+
+calculate_bandwidth() {
+    local total_bytes
+    local total_mb
+
+total_bytes=$(awk '{sum += $10} END {print sum}' "$LOGFILE")
+total_mb=$(awk -v bytes="${total_bytes:-0}" 'BEGIN {printf "%.1f", bytes / (1024 * 1024)}')
+ 
+    echo "Total Data Sent:     ${total_mb} MB"
+}
+calculate_traffic_summary() {
+    local total_requests
+    local unique_ips
+
     total_requests=$(wc -l < "$LOGFILE")
     unique_ips=$(awk '{print $1}' "$LOGFILE" | sort | uniq | wc -l)
+    echo "Total Requests:  $total_requests"
+    echo "Unique IP Addresses: $unique_ips"
+}
 
 # Count status codes efficiently using awk matching
     status_2xx=$(awk '$9 ~ /^2/ {print $9}' "$LOGFILE" | wc -l)
