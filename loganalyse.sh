@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi 
 # check if the log file was provided and if it exist or  it's readable
 if [ ! -f "$LOGFILE" ] || [ ! -r "$LOGFILE" ]; then
-    echo "Error: file "$LOGFILE" is missing or unreadable" >&2
+    echo "Error: file $LOGFILE is missing or unreadable" >&2
     exit 1
 fi 
     LOGFILE="$1"
